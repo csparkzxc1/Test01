@@ -11,7 +11,7 @@
     "start": "node dist/main.js",
     "lint": "eslint 'src/**/*.ts'",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "echo '@haru/backend: no tests yet'"
   },
   "dependencies": {
     "@haru/shared": "workspace:*",
