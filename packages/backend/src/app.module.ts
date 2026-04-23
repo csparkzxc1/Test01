@@ -10,6 +10,7 @@ import { QuickEntryModule } from "./quick-entry/quick-entry.module";
 import { CalendarModule } from "./calendar/calendar.module";
 import { TagsModule } from "./tags/tags.module";
 import { ChecklistModule } from "./checklist/checklist.module";
+import { NotificationsModule } from "./notifications/notifications.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ChecklistModule } from "./checklist/checklist.module";
     ProjectsModule,
     TagsModule,
     ChecklistModule,
+    NotificationsModule,
     QuickEntryModule,
     CalendarModule,
   ],

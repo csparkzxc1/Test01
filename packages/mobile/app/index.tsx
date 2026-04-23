@@ -1,7 +1,7 @@
-import { Screen } from "@/../components/Screen";
-import { QuickEntry } from "@/../components/QuickEntry";
-import { TaskRow } from "@/../components/TaskRow";
-import { isHoliday } from "@haru/shared/korean-calendar";
+import { Screen } from "../components/Screen";
+import { QuickEntry } from "../components/QuickEntry";
+import { TaskList } from "../components/TaskList";
+import { isHoliday } from "@haru/shared";
 
 export default function TodayScreen() {
   const now = new Date();
@@ -18,8 +18,7 @@ export default function TodayScreen() {
       subtitle={holiday ? `${dateLabel} · ${holiday.name}` : dateLabel}
     >
       <QuickEntry />
-      <TaskRow task={{ id: "1", title: "주간보고 초안 작성", tags: ["보고"] }} />
-      <TaskRow task={{ id: "2", title: "치과 예약 확정 전화", tags: ["전화", "15분컷"] }} />
+      <TaskList view="today" />
     </Screen>
   );
 }

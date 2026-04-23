@@ -50,6 +50,26 @@ model User {
   memberships   AreaMember[]
   sessions      Session[]
   notificationPreference NotificationPreference?
+  pushDevices   PushDevice[]
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+  WEB
+}
+
+model PushDevice {
+  id          String         @id @default(uuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String         @unique
+  platform    DevicePlatform
+  deviceLabel String?
+  lastSeenAt  DateTime       @default(now())
+  createdAt   DateTime       @default(now())
+
+  @@index([userId])
 }
 
 model SocialAccount {

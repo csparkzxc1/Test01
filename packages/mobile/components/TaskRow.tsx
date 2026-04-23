@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export interface TaskItem {
@@ -8,11 +7,16 @@ export interface TaskItem {
   tags?: string[];
 }
 
-export function TaskRow({ task }: { task: TaskItem }) {
-  const [done, setDone] = useState(false);
+interface Props {
+  task: TaskItem;
+  done?: boolean;
+  onToggle?: () => void;
+}
+
+export function TaskRow({ task, done = false, onToggle }: Props) {
   return (
     <Pressable
-      onPress={() => setDone((d) => !d)}
+      onPress={onToggle}
       className="flex-row items-start gap-3 py-3 border-b border-black/5"
     >
       <View
