@@ -1,0 +1,29 @@
+node_modules/
+dist/
+build/
+.next/
+.expo/
+.turbo/
+coverage/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+.idea/
+.vscode/
+prisma/migrations/dev.db*
+ios/Pods/
+android/.gradle/
+android/app/build/
+android/build/
+*.tsbuildinfo
+
+# Claude Code local settings
+.claude/
+
+# OS
+Thumbs.db
+
+# Temp files
+*.orig.*
