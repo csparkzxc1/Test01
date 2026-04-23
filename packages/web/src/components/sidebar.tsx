@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 const NAV = [
   { href: "/today", label: "오늘", icon: "☀︎" },
@@ -10,8 +12,10 @@ const NAV = [
 ] as const;
 
 export function Sidebar() {
+  const { user, loading, signOut } = useAuth();
+
   return (
-    <aside className="w-60 shrink-0 border-r border-black/5 dark:border-white/10 px-4 py-8">
+    <aside className="w-60 shrink-0 border-r border-black/5 dark:border-white/10 px-4 py-8 flex flex-col">
       <div className="text-xl font-semibold mb-8 tracking-tight">하루</div>
       <nav className="space-y-0.5">
         {NAV.map((item) => (
@@ -31,6 +35,36 @@ export function Sidebar() {
           + 새 영역
         </Link>
       </nav>
+      <div className="mt-auto pt-6 border-t border-black/5 dark:border-white/10 text-sm">
+        {loading ? (
+          <div className="px-3 py-2 text-haru-muted">로딩 중…</div>
+        ) : user ? (
+          <div className="px-3 py-2">
+            <div className="text-haru-fg">{user.nickname}</div>
+            <div className="text-xs text-haru-muted truncate">{user.email ?? "—"}</div>
+            <button
+              onClick={() => void signOut()}
+              className="mt-2 text-xs text-haru-muted hover:text-haru-accent"
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <div className="px-3 py-2 flex gap-2">
+            <Link href="/login" className="text-haru-accent hover:underline">
+              로그인
+            </Link>
+            <span className="text-haru-muted">·</span>
+            <Link href="/register" className="text-haru-muted hover:text-haru-accent">
+              가입
+            </Link>
+          </div>
+        )}
+        <div className="mt-3 px-3 text-xs text-haru-muted space-x-2">
+          <Link href="/legal/privacy" className="hover:underline">개인정보</Link>
+          <Link href="/legal/terms" className="hover:underline">이용약관</Link>
+        </div>
+      </div>
     </aside>
   );
 }

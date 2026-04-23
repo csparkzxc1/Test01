@@ -1,5 +1,5 @@
 import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
-import { getHolidays, isHoliday } from "@haru/shared/korean-calendar";
+import { getHolidays, isHoliday } from "@haru/shared";
 
 @Controller("calendar")
 export class CalendarController {

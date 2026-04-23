@@ -1,7 +1,6 @@
+"use client";
 import { QuickEntry } from "@/components/quick-entry";
-import { TaskList, type TaskItem } from "@/components/task-list";
-
-const sample: TaskItem[] = [];
+import { TaskList } from "@/components/task-list";
 
 export default function UpcomingPage() {
   return (
@@ -11,7 +10,7 @@ export default function UpcomingPage() {
         <p className="text-sm text-haru-muted mt-1">앞으로 할 일들</p>
       </header>
       <QuickEntry />
-      <TaskList initial={sample} />
+      <TaskList view="upcoming" />
     </>
   );
 }

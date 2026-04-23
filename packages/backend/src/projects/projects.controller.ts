@@ -1,27 +1,31 @@
-import { Body, Controller, Get, Headers, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { ProjectsService, type CreateProjectInput } from "./projects.service";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { CurrentUser } from "../auth/current-user.decorator";
+import type { AuthUser } from "../auth/auth.types";
 
 @Controller("projects")
+@UseGuards(JwtAuthGuard)
 export class ProjectsController {
   constructor(private readonly projects: ProjectsService) {}
 
   @Get()
-  list(@Headers("x-user-id") userId: string, @Query("areaId") areaId?: string) {
-    return this.projects.list(userId, areaId);
+  list(@CurrentUser() user: AuthUser, @Query("areaId") areaId?: string) {
+    return this.projects.list(user.id, areaId);
   }
 
   @Get(":id")
-  get(@Headers("x-user-id") userId: string, @Param("id") id: string) {
-    return this.projects.get(userId, id);
+  get(@CurrentUser() user: AuthUser, @Param("id") id: string) {
+    return this.projects.get(user.id, id);
   }
 
   @Post()
-  create(@Headers("x-user-id") userId: string, @Body() body: CreateProjectInput) {
-    return this.projects.create(userId, body);
+  create(@CurrentUser() user: AuthUser, @Body() body: CreateProjectInput) {
+    return this.projects.create(user.id, body);
   }
 
   @Post(":id/complete")
-  complete(@Headers("x-user-id") userId: string, @Param("id") id: string) {
-    return this.projects.complete(userId, id);
+  complete(@CurrentUser() user: AuthUser, @Param("id") id: string) {
+    return this.projects.complete(user.id, id);
   }
 }

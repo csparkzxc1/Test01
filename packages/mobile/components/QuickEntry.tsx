@@ -30,7 +30,7 @@ export function QuickEntry() {
           )}
           {parsed.tags.length > 0 && (
             <Text className="text-xs text-haru-muted mt-0.5">
-              {parsed.tags.map((t) => `#${t}`).join(" ")}
+              {parsed.tags.map((t: string) => `#${t}`).join(" ")}
             </Text>
           )}
         </View>

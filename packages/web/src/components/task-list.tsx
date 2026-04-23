@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
+import { api, type ApiTask, type ViewKind } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 export interface TaskItem {
   id: string;
@@ -11,19 +13,72 @@ export interface TaskItem {
   completed?: boolean;
 }
 
-export function TaskList({ initial }: { initial: TaskItem[] }) {
-  const [tasks, setTasks] = useState(initial);
+interface Props {
+  /** 로그인 후 실 데이터를 받을 뷰 */
+  view?: ViewKind;
+  /** 로그인 전/샘플 모드 */
+  initial?: TaskItem[];
+}
 
-  const toggle = (id: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    );
+export function TaskList({ view, initial }: Props) {
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState<TaskItem[]>(initial ?? []);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    if (!view || !user) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const list = await api.listTasks(view);
+      setTasks(list.map(fromApi));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "불러오기 실패");
+    } finally {
+      setLoading(false);
+    }
+  }, [view, user]);
+
+  useEffect(() => {
+    void reload();
+  }, [reload]);
+
+  useEffect(() => {
+    const h = () => void reload();
+    window.addEventListener("haru:tasks-changed", h);
+    return () => window.removeEventListener("haru:tasks-changed", h);
+  }, [reload]);
+
+  const toggle = async (id: string) => {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+    // optimistic
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+    if (user && view) {
+      try {
+        if (!task.completed) await api.completeTask(id);
+        // 완료 취소 엔드포인트는 v1에 없으므로 새로고침
+        if (task.completed) await reload();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "완료 실패");
+        await reload();
+      }
+    }
   };
+
+  if (loading && tasks.length === 0) {
+    return <div className="text-haru-muted text-sm py-12 text-center">불러오는 중…</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-sm py-6">{error}</div>;
+  }
 
   if (!tasks.length) {
     return (
       <div className="text-haru-muted text-sm py-12 text-center">
-        할 일이 없습니다. 아래 빠른 입력으로 새 할 일을 추가해 보세요.
+        할 일이 없습니다. 위 빠른 입력으로 새 할 일을 추가해 보세요.
       </div>
     );
   }
@@ -69,6 +124,17 @@ export function TaskList({ initial }: { initial: TaskItem[] }) {
       ))}
     </ul>
   );
+}
+
+function fromApi(t: ApiTask): TaskItem {
+  return {
+    id: t.id,
+    title: t.title,
+    when: t.when,
+    deadline: t.deadline,
+    tags: t.taskTags.map((tt) => tt.tag.name),
+    completed: t.status !== "OPEN",
+  };
 }
 
 function formatKst(iso: string): string {

@@ -212,7 +212,7 @@ model NotificationPreference {
   digestHour   Int      @default(8)
 }
 
-/** 감사 로그 — 개인정보보호법 대응 */
+// 감사 로그 — 개인정보보호법 대응
 model AuditLog {
   id        String   @id @default(uuid())
   actorId   String?

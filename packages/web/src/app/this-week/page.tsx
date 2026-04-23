@@ -1,17 +1,7 @@
+"use client";
 import { QuickEntry } from "@/components/quick-entry";
-import { TaskList, type TaskItem } from "@/components/task-list";
+import { TaskList } from "@/components/task-list";
 import { getHolidays } from "@haru/shared/korean-calendar";
-
-const sample: TaskItem[] = [
-  { id: "a", title: "팀 회의", when: addDays(1).toISOString(), tags: ["회의"] },
-  { id: "b", title: "주간보고 제출", deadline: addDays(4).toISOString(), tags: ["보고"] },
-];
-
-function addDays(n: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d;
-}
 
 export default function ThisWeekPage() {
   const year = new Date().getFullYear();
@@ -34,7 +24,7 @@ export default function ThisWeekPage() {
         </p>
       </header>
       <QuickEntry />
-      <TaskList initial={sample} />
+      <TaskList view="thisWeek" />
     </>
   );
 }
